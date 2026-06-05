@@ -1,15 +1,25 @@
 import type ModuleInstance from './main.js'
 
 export type VariablesSchema = {
-	variable1: string
-	variable2: string
-	variable3: string
+	wb_mode: string | undefined
+	exposure_mode: string | undefined
+	focus_mode: string | undefined
+	device_name: string | undefined
 }
 
 export function UpdateVariableDefinitions(self: ModuleInstance): void {
 	self.setVariableDefinitions({
-		variable1: { name: 'My first variable' },
-		variable2: { name: 'My second variable' },
-		variable3: { name: 'Another variable' },
+		wb_mode: {
+			name: 'Current WB Mode',
+		},
+		exposure_mode: {
+			name: 'Current Exposure Mode',
+		},
+		focus_mode: {
+			name: 'Current Focus Mode',
+		},
+		device_name: {
+			name: 'Device Name',
+		},
 	})
 }

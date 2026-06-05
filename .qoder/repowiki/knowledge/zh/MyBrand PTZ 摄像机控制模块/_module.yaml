@@ -1,0 +1,59 @@
+schema_version: 1
+module_path: ""
+title: MyBrand PTZ 摄像机控制模块
+scope:
+    - .github/
+    - .husky/
+    - companion/
+    - src/
+    - .gitattributes
+    - .gitignore
+    - .prettierignore
+    - .yarnrc.yml
+    - README.md
+    - eslint.config.mjs
+    - package.json
+    - tsconfig.build.json
+    - tsconfig.json
+    - yarn.lock
+    - .github\ISSUE_TEMPLATE\bug_report.yml
+    - .github\ISSUE_TEMPLATE\config.yml
+    - .github\ISSUE_TEMPLATE\feature_request.yml
+    - .github\workflows\companion-module-checks.yaml
+    - .github\workflows\node.yaml
+    - .husky\_\.gitignore
+    - .husky\_\applypatch-msg
+    - .husky\_\commit-msg
+    - .husky\_\h
+    - .husky\_\husky.sh
+    - .husky\_\post-applypatch
+    - .husky\_\post-checkout
+    - .husky\_\post-commit
+    - .husky\_\post-merge
+    - .husky\_\post-rewrite
+    - .husky\_\pre-applypatch
+    - .husky\_\pre-auto-gc
+    - .husky\_\pre-commit
+    - .husky\_\pre-merge-commit
+    - .husky\_\pre-push
+    - .husky\_\pre-rebase
+    - .husky\_\prepare-commit-msg
+    - .husky\pre-commit
+    - LICENSE
+    - companion\HELP.md
+    - companion\manifest.json
+    - mybrand-camera-0.1.0.tgz
+    - pkg\mybrand-camera\companion\HELP.md
+    - pkg\mybrand-camera\companion\manifest.json
+    - pkg\mybrand-camera\main.js
+    - pkg\mybrand-camera\package.json
+    - src\actions.ts
+    - src\config.ts
+    - src\feedbacks.ts
+    - src\main.ts
+    - src\presets.ts
+    - src\upgrades.ts
+    - src\variables.ts
+source_files: []
+depends_on: []
+related_to: []

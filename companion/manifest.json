@@ -1,28 +1,28 @@
 {
-	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
+	"$schema": "https://raw.githubusercontent.com/bitfocus/companion-module-base/main/manifest.schema.json",
+	"id": "telycam-ptz-ip-camera",
 	"type": "connection",
-	"id": "your-module-name",
-	"name": "your-module-name",
-	"shortname": "module-shortname",
-	"description": "A short one line description of your module",
-	"version": "0.0.0",
+	"name": "Telycam PTZ IP Camera",
+	"shortname": "Telycam PTZ",
+	"description": "Telycam PTZ IP Camera VISCA and HTTP control plugin",
+	"version": "1.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/bitfocus/companion-module-your-module-name.git",
-	"bugs": "https://github.com/bitfocus/companion-module-your-module-name/issues",
+	"manufacturer": "Telycam",
+	"products": ["Telycam PTZ IP Camera"],
+	"keywords": ["camera", "ptz", "visca", "http"],
+	"repository": "git+https://github.com/bitfocus/companion-module-telycam-ptz-ip-camera.git",
+	"bugs": "https://github.com/bitfocus/companion-module-telycam-ptz-ip-camera/issues",
 	"maintainers": [
 		{
-			"name": "Your name",
-			"email": "Your email"
+			"name": "Administrator",
+			"email": "sales@telycam.com"
 		}
 	],
+	"legacyIds": [],
 	"runtime": {
 		"type": "node22",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
 		"entrypoint": "../dist/main.js"
-	},
-	"legacyIds": [],
-	"manufacturer": "Your company",
-	"products": ["Your product"],
-	"keywords": []
+	}
 }

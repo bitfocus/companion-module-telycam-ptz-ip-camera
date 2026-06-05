@@ -1,26 +1,26 @@
 {
-	"name": "your-module-name",
-	"version": "0.1.0",
+	"name": "telycam-ptz-ip-camera-module",
+	"version": "1.0.0",
 	"main": "dist/main.js",
 	"type": "module",
 	"scripts": {
 		"postinstall": "husky",
 		"format": "prettier -w .",
-		"package": "run build && companion-module-build",
-		"build": "rimraf dist && run build:main",
+		"package": "yarn build && companion-module-build",
+		"build": "rimraf dist && yarn build:main",
 		"build:main": "tsc -p tsconfig.build.json",
 		"dev": "tsc -p tsconfig.build.json --watch",
 		"lint:raw": "eslint",
-		"lint": "run lint:raw ."
+		"lint": "yarn lint:raw ."
 	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-your-module-name.git"
+		"url": "git+https://github.com/bitfocus/companion-module-telycam-ptz-ip-camera.git"
 	},
 	"engines": {
-		"node": "^22.20",
-		"yarn": "^4"
+		"node": ">=22.20.0",
+		"yarn": ">=1.22.0"
 	},
 	"dependencies": {
 		"@companion-module/base": "2.0.4"
@@ -44,6 +44,5 @@
 		"*.{ts,tsx,js,jsx}": [
 			"yarn lint:raw --fix"
 		]
-	},
-	"packageManager": "yarn@4.12.0"
+	}
 }
