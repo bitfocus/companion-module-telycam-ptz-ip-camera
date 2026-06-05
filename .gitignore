@@ -8,3 +8,4 @@ DEBUG-*
 /.vscode
 *.xlsx
 *.html
+.qoder/
