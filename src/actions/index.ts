@@ -8,10 +8,8 @@ import { createImageActions } from './image.js'
 import { createSystemActions } from './system.js'
 import { createHttpActions } from './http.js'
 import { createTallyActions } from './tally.js'
+import { createStreamActions } from './stream.js'
 
-/**
- * 汇总所有子模块的动作定义
- */
 export function createAllActions(self: ModuleInstance): CompanionActionDefinitions {
 	return {
 		...createPtzActions(self),
@@ -22,13 +20,10 @@ export function createAllActions(self: ModuleInstance): CompanionActionDefinitio
 		...createSystemActions(self),
 		...createHttpActions(self),
 		...createTallyActions(self),
+		...createStreamActions(self),
 	}
 }
 
-/**
- * ActionsSchema — 满足 InstanceTypes.actions 的 Record<string, CompanionActionSchema> 约束
- * 每个 action 的 options 类型需手动声明，以便框架在 preset/feedback 中提供 actionId 类型提示
- */
 export type ActionsSchema = {
 	// PTZ
 	ptz_move: { options: { direction: string; pan_speed: number; tilt_speed: number } }
@@ -112,4 +107,11 @@ export type ActionsSchema = {
 	// Tally
 	tally_brightness: { options: { brightness: string } }
 	tally_control: { options: { mode: string } }
+	// Stream
+	mainstream_encode: { options: { mode: string } }
+	mainstream_framerate: { options: { fps: number } }
+	mainstream_bitrate_control: { options: { mode: string } }
+	substream_encode: { options: { mode: string } }
+	substream_framerate: { options: { fps: number } }
+	substream_bitrate_control: { options: { mode: string } }
 }

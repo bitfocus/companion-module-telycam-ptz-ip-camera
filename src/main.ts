@@ -30,7 +30,8 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		this.config = config
 
 		this.log('info', 'Module initialized: v1.0.0')
-		// 初始化连接与轮询
+
+		// Initialize connection and polling
 		this.initUdp()
 		this.startHttpPolling()
 
@@ -40,32 +41,28 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		this.updateVariableDefinitions() // export variable definitions
 	}
 
-	// 当模块被删除时调用，进行资源释放
 	async destroy(): Promise<void> {
 		this.log('debug', 'destroy')
 		this.stopHttpPolling()
 		this.closeUdp()
 	}
 
-	// 当用户在网页端修改了配置时触发
 	async configUpdated(config: ModuleConfig): Promise<void> {
 		this.config = config
 
-		// 重启 UDP Socket
 		this.closeUdp()
+		// Restart UDP Socket
 		this.initUdp()
 
-		// 重启 HTTP 轮询
+		// Restart HTTP Polling
 		this.stopHttpPolling()
 		this.startHttpPolling()
 	}
 
-	// 返回网页端的配置表单
 	getConfigFields(): SomeCompanionConfigField[] {
 		return GetConfigFields()
 	}
 
-	// ==================== VISCA UDP 控制部分 ====================
 	private initUdp(): void {
 		if (!this.config.host) {
 			this.updateStatus(InstanceStatus.BadConfig, 'Please enter IP address')
@@ -92,14 +89,14 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			try {
 				this.udpSocket.close()
 			} catch {
-				// 忽略
+				this.log('debug', 'UDP close error (ignored)')
 			}
 			this.udpSocket = undefined
 		}
 	}
 
 	/**
-	 * 公共方法：发送 VISCA 十六进制指令
+	 * Send VISCA hex commands
 	 */
 	public sendViscaCommand(hexString: string): void {
 		if (!this.udpSocket) {
@@ -115,8 +112,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			return
 		}
 
-		// 过滤空格并转换为 Buffer 字节流
-		const cleanHex = hexString.replace(/\s+/g, '')
+		const cleanHex = hexString.replace(/\s+/g, '') // Strip spaces and convert to Buffer byte stream
 		if (cleanHex.length % 2 !== 0) {
 			this.log('error', `Invalid hex command: ${cleanHex}`)
 			return
@@ -133,7 +129,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		})
 	}
 
-	// 摄像机当前状态缓存（用于 UP/DOWN 操作）
+	// Cache of the camera's current image states (for relative UP/DOWN operations)
 	public currentState: Record<string, number> = {
 		brightness: 8,
 		sharpness: 8,
@@ -144,16 +140,19 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		color_temp: 5600,
 	}
 
-	// ==================== HTTP 状态轮询部分 ====================
 	private startHttpPolling(): void {
-		if (!this.config.host) return
+		this.stopHttpPolling() // Clean up old timer before restart
 
-		// 每 5 秒轮询一次状态
+		const interval = Number(this.config.poll_interval ?? 5000)
+		if (interval <= 0) {
+			this.log('info', 'HTTP status polling is disabled.')
+			return
+		}
+
 		this.pollInterval = setInterval(() => {
 			void this.pollCameraStatus()
-		}, 4000)
+		}, interval)
 
-		// 立即执行一次
 		void this.pollCameraStatus()
 	}
 
@@ -169,9 +168,20 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 
 		const port = this.config.httpPort || '80'
 
-		// 【修改这里】：移除了不支持的 "color_temp":true 字段，其余完全保留
-		const path = `/cgi-bin/web.fcgi?func=get{"image":{"WB_mode":true,"exposure_mode":true,"focus_mode":true,"brightness":true,"sharpness":true,"contrast":true,"saturation":true,"gamma":true,"WDR_level":true}}`
-		const url = `http://${this.config.host}:${port}${encodeURI(path)}`
+		const jsonPayload = JSON.stringify({
+			image: {
+				WB_mode: true,
+				exposure_mode: true,
+				focus_mode: true,
+				brightness: true,
+				sharpness: true,
+				contrast: true,
+				saturation: true,
+				gamma: true,
+				WDR_level: true,
+			},
+		})
+		const url = `http://${this.config.host}:${port}/cgi-bin/web.fcgi?func=get${encodeURIComponent(jsonPayload)}`
 
 		try {
 			const controller = new AbortController()
@@ -200,7 +210,6 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 					const expMode = json.image?.exposure_mode || 'unknown'
 					const focusMode = json.image?.focus_mode || 'unknown'
 
-					// 缓存图像参数当前值（用于 UP/DOWN 操作）
 					if (json.image) {
 						if (typeof json.image.brightness === 'number') this.currentState.brightness = json.image.brightness
 						if (typeof json.image.sharpness === 'number') this.currentState.sharpness = json.image.sharpness
@@ -208,16 +217,18 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 						if (typeof json.image.saturation === 'number') this.currentState.saturation = json.image.saturation
 						if (typeof json.image.gamma === 'number') this.currentState.gamma = json.image.gamma
 						if (typeof json.image.WDR_level === 'number') this.currentState.wdr_level = json.image.WDR_level
-
-						// 注：色温保持在 local 内存中维护（因为不支持 HTTP 查询），这里不进行 HTTP 覆盖
 					}
 
-					// 实时更新 Companion 内部变量
 					this.setVariableValues({
 						wb_mode: wbMode,
 						exposure_mode: expMode,
 						focus_mode: focusMode,
-						device_name: 'Camera',
+						brightness: json.image.brightness ?? undefined,
+						sharpness: json.image.sharpness ?? undefined,
+						contrast: json.image.contrast ?? undefined,
+						saturation: json.image.saturation ?? undefined,
+						gamma: json.image.gamma ?? undefined,
+						wdr_level: json.image.WDR_level ?? undefined,
 					})
 
 					if (!isStatusOk) {
@@ -225,10 +236,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 					}
 					this.updateStatus(InstanceStatus.Ok)
 				} else {
-					this.log(
-						'debug',
-						`Polling successful but no valid image data. Status: ${json?.status}, Full response: ${JSON.stringify(json)}`,
-					)
+					this.log('debug', `Polling successful but image properties are incomplete. Response: ${JSON.stringify(json)}`)
 				}
 			} else {
 				this.log('warn', `HTTP polling failed, status code: ${response.status}`)
@@ -238,7 +246,6 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		}
 	}
 
-	// ==================== 框架内置更新方法 ====================
 	updateActions(): void {
 		UpdateActions(this)
 	}

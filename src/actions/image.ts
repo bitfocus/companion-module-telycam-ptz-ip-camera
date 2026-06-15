@@ -60,11 +60,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040300FF')
@@ -96,11 +96,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040500FF')
@@ -132,11 +132,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040400FF')
@@ -198,11 +198,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040A00FF')
@@ -234,11 +234,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040B00FF')
@@ -271,11 +271,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-14 / Limit 4-15)', default: 0, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-14 / Limit 4-15)', default: 0, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 0)
+				const val = Math.round(Number(event.options.value ?? 0))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040C00FF')
@@ -310,11 +310,11 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255 },
+				{ id: 'value', type: 'number', label: 'Value (0-255, Direct only)', default: 128, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const val = Number(event.options.value ?? 128)
+				const val = Math.round(Number(event.options.value ?? 128))
 				switch (action) {
 					case 'reset':
 						self.sendViscaCommand('8101040D00FF')
@@ -345,7 +345,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -355,9 +355,9 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(0, self.currentState.brightness - 1)
 				} else {
-					val = Number(event.options.value ?? 8)
+					val = Math.round(Number(event.options.value ?? 8))
 				}
-				self.currentState.brightness = val // 立即更新缓存
+				self.currentState.brightness = val
 				self.sendViscaCommand(`810104A40000${toViscaByte(val)}FF`)
 			},
 		},
@@ -375,7 +375,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -385,9 +385,9 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(0, self.currentState.sharpness - 1)
 				} else {
-					val = Number(event.options.value ?? 8)
+					val = Math.round(Number(event.options.value ?? 8))
 				}
-				self.currentState.sharpness = val // 立即更新缓存
+				self.currentState.sharpness = val
 				self.sendViscaCommand(`810104420000${toViscaByte(val)}FF`)
 			},
 		},
@@ -405,7 +405,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -415,7 +415,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(0, self.currentState.saturation - 1)
 				} else {
-					val = Number(event.options.value ?? 8)
+					val = Math.round(Number(event.options.value ?? 8))
 				}
 				self.currentState.saturation = val
 				self.sendViscaCommand(`810104A10000${toViscaByte(val)}FF`)
@@ -435,7 +435,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 8, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -445,7 +445,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(0, self.currentState.contrast - 1)
 				} else {
-					val = Number(event.options.value ?? 8)
+					val = Math.round(Number(event.options.value ?? 8))
 				}
 				self.currentState.contrast = val
 				self.sendViscaCommand(`810104A20000${toViscaByte(val)}FF`)
@@ -465,7 +465,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 10, min: 0, max: 15 },
+				{ id: 'value', type: 'number', label: 'Value (0-15, Direct only)', default: 10, min: 0, max: 15, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -475,7 +475,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(0, self.currentState.gamma - 1)
 				} else {
-					val = Number(event.options.value ?? 10)
+					val = Math.round(Number(event.options.value ?? 10))
 				}
 				self.currentState.gamma = val
 				self.sendViscaCommand(`8101045B0${val.toString(16)}FF`)
@@ -514,7 +514,7 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Value (0-6, Direct only)', default: 0, min: 0, max: 6 },
+				{ id: 'value', type: 'number', label: 'Value (0-6, Direct only)', default: 0, min: 0, max: 6, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -643,7 +643,15 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'up',
 				},
-				{ id: 'value', type: 'number', label: 'Color Temp (K, Direct only)', default: 5600, min: 1800, max: 10000 },
+				{
+					id: 'value',
+					type: 'number',
+					label: 'Color Temp (K, Direct only)',
+					default: 5600,
+					min: 1800,
+					max: 10000,
+					step: 100,
+				},
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -653,11 +661,12 @@ export function createImageActions(self: ModuleInstance): CompanionActionDefinit
 				} else if (action === 'down') {
 					val = Math.max(1800, self.currentState.color_temp - 100)
 				} else {
-					val = Number(event.options.value ?? 5600)
+					val = Math.round(Number(event.options.value ?? 5600))
 				}
 				self.currentState.color_temp = val
 				const pos = uint16ToViscaNibbles(val)
 				self.sendViscaCommand(`8101042A${pos}FF`)
+				self.setVariableValues({ color_temp: val })
 			},
 		},
 		flicker_mode: {

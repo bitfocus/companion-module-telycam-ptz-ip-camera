@@ -23,13 +23,13 @@ export function createPtzActions(self: ModuleInstance): CompanionActionDefinitio
 					],
 					default: 'left',
 				},
-				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24 },
-				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20 },
+				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24, step: 1 },
+				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20, step: 1 },
 			],
 			callback: async (event) => {
 				const dir = event.options.direction as string
-				const pSpeed = toHex(Number(event.options.pan_speed ?? 18))
-				const tSpeed = toHex(Number(event.options.tilt_speed ?? 18))
+				const pSpeed = toHex(Math.round(Number(event.options.pan_speed ?? 18)))
+				const tSpeed = toHex(Math.round(Number(event.options.tilt_speed ?? 18)))
 				const dirMap: Record<string, string> = {
 					left: '0103',
 					right: '0203',
@@ -68,40 +68,72 @@ export function createPtzActions(self: ModuleInstance): CompanionActionDefinitio
 		ptz_absolute_position: {
 			name: 'PTZ: Absolute Position',
 			options: [
-				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24 },
-				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20 },
-				{ id: 'pan_pos', type: 'number', label: 'Pan Position (-32768~32767)', default: 0, min: -32768, max: 32767 },
-				{ id: 'tilt_pos', type: 'number', label: 'Tilt Position (-32768~32767)', default: 0, min: -32768, max: 32767 },
+				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24, step: 1 },
+				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20, step: 1 },
+				{
+					id: 'pan_pos',
+					type: 'number',
+					label: 'Pan Position (-32768~32767)',
+					default: 0,
+					min: -32768,
+					max: 32767,
+					step: 1,
+				},
+				{
+					id: 'tilt_pos',
+					type: 'number',
+					label: 'Tilt Position (-32768~32767)',
+					default: 0,
+					min: -32768,
+					max: 32767,
+					step: 1,
+				},
 			],
 			callback: async (event) => {
-				const pSpeed = toHex(Number(event.options.pan_speed ?? 18))
-				const tSpeed = toHex(Number(event.options.tilt_speed ?? 18))
-				const panPos = uint16ToViscaNibbles(Number(event.options.pan_pos ?? 0) & 0xffff)
-				const tiltPos = uint16ToViscaNibbles(Number(event.options.tilt_pos ?? 0) & 0xffff)
+				const pSpeed = toHex(Math.round(Number(event.options.pan_speed ?? 18)))
+				const tSpeed = toHex(Math.round(Number(event.options.tilt_speed ?? 18)))
+				const panPos = uint16ToViscaNibbles(Math.round(Number(event.options.pan_pos ?? 0)) & 0xffff)
+				const tiltPos = uint16ToViscaNibbles(Math.round(Number(event.options.tilt_pos ?? 0)) & 0xffff)
 				self.sendViscaCommand(`81010602${pSpeed}${tSpeed}${panPos}${tiltPos}FF`)
 			},
 		},
 		ptz_relative_position: {
 			name: 'PTZ: Relative Position',
 			options: [
-				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24 },
-				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20 },
-				{ id: 'pan_offset', type: 'number', label: 'Pan Offset (-32768~32767)', default: 0, min: -32768, max: 32767 },
-				{ id: 'tilt_offset', type: 'number', label: 'Tilt Offset (-32768~32767)', default: 0, min: -32768, max: 32767 },
+				{ id: 'pan_speed', type: 'number', label: 'Pan Speed (1-24)', default: 18, min: 1, max: 24, step: 1 },
+				{ id: 'tilt_speed', type: 'number', label: 'Tilt Speed (1-20)', default: 18, min: 1, max: 20, step: 1 },
+				{
+					id: 'pan_offset',
+					type: 'number',
+					label: 'Pan Offset (-32768~32767)',
+					default: 0,
+					min: -32768,
+					max: 32767,
+					step: 1,
+				},
+				{
+					id: 'tilt_offset',
+					type: 'number',
+					label: 'Tilt Offset (-32768~32767)',
+					default: 0,
+					min: -32768,
+					max: 32767,
+					step: 1,
+				},
 			],
 			callback: async (event) => {
-				const pSpeed = toHex(Number(event.options.pan_speed ?? 18))
-				const tSpeed = toHex(Number(event.options.tilt_speed ?? 18))
-				const panPos = uint16ToViscaNibbles(Number(event.options.pan_offset ?? 0) & 0xffff)
-				const tiltPos = uint16ToViscaNibbles(Number(event.options.tilt_offset ?? 0) & 0xffff)
+				const pSpeed = toHex(Math.round(Number(event.options.pan_speed ?? 18)))
+				const tSpeed = toHex(Math.round(Number(event.options.tilt_speed ?? 18)))
+				const panPos = uint16ToViscaNibbles(Math.round(Number(event.options.pan_offset ?? 0)) & 0xffff)
+				const tiltPos = uint16ToViscaNibbles(Math.round(Number(event.options.tilt_offset ?? 0)) & 0xffff)
 				self.sendViscaCommand(`81010603${pSpeed}${tSpeed}${panPos}${tiltPos}FF`)
 			},
 		},
 		ptz_speed: {
 			name: 'PTZ: Set Default Speed',
-			options: [{ id: 'pt_speed', type: 'number', label: 'PT Speed (5-24)', default: 18, min: 5, max: 24 }],
+			options: [{ id: 'pt_speed', type: 'number', label: 'PT Speed (5-24)', default: 18, min: 5, max: 24, step: 1 }],
 			callback: async (event) => {
-				const speed = toHex(Number(event.options.pt_speed ?? 18))
+				const speed = toHex(Math.round(Number(event.options.pt_speed ?? 18)))
 				self.sendViscaCommand(`810104C10000${speed}FF`)
 			},
 		},

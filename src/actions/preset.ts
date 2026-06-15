@@ -18,11 +18,11 @@ export function createPresetActions(self: ModuleInstance): CompanionActionDefini
 					],
 					default: 'recall',
 				},
-				{ id: 'preset_num', type: 'number', label: 'Preset Number (0-127)', default: 1, min: 0, max: 127 },
+				{ id: 'preset_num', type: 'number', label: 'Preset Number (0-127)', default: 1, min: 0, max: 127, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const num = toHex(Number(event.options.preset_num ?? 1))
+				const num = toHex(Math.round(Number(event.options.preset_num ?? 1)))
 				const actionMap: Record<string, string> = { recall: '02', save: '01', reset: '00' }
 				const actionCode = actionMap[action]
 				if (actionCode) self.sendViscaCommand(`8101043F${actionCode}${num}FF`)
@@ -42,31 +42,31 @@ export function createPresetActions(self: ModuleInstance): CompanionActionDefini
 					],
 					default: 'recall',
 				},
-				{ id: 'preset_num', type: 'number', label: 'Preset Number (0-255)', default: 1, min: 0, max: 255 },
+				{ id: 'preset_num', type: 'number', label: 'Preset Number (0-255)', default: 1, min: 0, max: 255, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
-				const num = Number(event.options.preset_num ?? 1)
+				const num = Math.round(Number(event.options.preset_num ?? 1))
 				const highNibble = toHex((num >> 4) & 0x0f)
 				const lowNibble = toHex(num & 0x0f)
 				const actionMap: Record<string, string> = { recall: '02', save: '01', reset: '00' }
 				const actionCode = actionMap[action]
-				if (actionCode) self.sendViscaCommand(`8101043F${actionCode}0${highNibble}0${lowNibble}FF`)
+				if (actionCode) self.sendViscaCommand(`8101043F${actionCode}${highNibble}${lowNibble}FF`)
 			},
 		},
 		preset_speed: {
 			name: 'Preset: Set Recall Speed',
-			options: [{ id: 'speed', type: 'number', label: 'Speed (2-24)', default: 18, min: 2, max: 24 }],
+			options: [{ id: 'speed', type: 'number', label: 'Speed (2-24)', default: 18, min: 2, max: 24, step: 1 }],
 			callback: async (event) => {
-				const speed = toHex(Number(event.options.speed ?? 18))
+				const speed = toHex(Math.round(Number(event.options.speed ?? 18)))
 				self.sendViscaCommand(`81017E010B00${speed}FF`)
 			},
 		},
 		preset_zoom_speed: {
 			name: 'Preset: Set Recall Zoom Speed',
-			options: [{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7 }],
+			options: [{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7, step: 1 }],
 			callback: async (event) => {
-				const speed = toHex(Number(event.options.speed ?? 5))
+				const speed = toHex(Math.round(Number(event.options.speed ?? 5)))
 				self.sendViscaCommand(`81017E012B000${speed}FF`)
 			},
 		},

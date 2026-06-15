@@ -1,11 +1,15 @@
-# companion-module-[replace with module name]
+# Telycam PTZ IP Camera Module for Bitfocus Companion
 
-See [HELP.md](./companion/HELP.md) and [LICENSE](./LICENSE)
+This module allows you to control Telycam PTZ IP Cameras using Bitfocus Companion. It supports dual-protocol communication:
 
-## Getting started
+- **VISCA over IP (UDP)**: For ultra-low latency real-time motion control (Pan, Tilt, Zoom, presets, etc.).
+- **HTTP (GET REST API)**: For stateless configurations and double-feedback status polling (White Balance, Exposure, WDR, Backlight, etc.).
 
-Executing a `yarn` command should perform all necessary steps to develop the module, if it does not then follow the steps below.
+## Connection Configuration
 
-The module can be built once with `yarn build`. This should be enough to get the module to be loadable by companion.
+To configure this module, you need to provide:
 
-While developing the module, by using `yarn dev` the compiler will be run in watch mode to recompile the files on change.
+- **Camera IP Address (Target IP)**: The IP address of your Telycam camera.
+- **VISCA UDP Port**: The port used for VISCA over IP control (default is `52381`).
+- **HTTP Port**: The port used for HTTP REST API control (default is `80`).
+- **Polling Interval (ms)**: Set the HTTP polling interval in milliseconds (default is `5000`ms, use `0` to disable).

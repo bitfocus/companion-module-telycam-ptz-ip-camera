@@ -46,7 +46,7 @@ export function createFocusActions(self: ModuleInstance): CompanionActionDefinit
 					],
 					default: 'far_variable',
 				},
-				{ id: 'speed', type: 'number', label: 'Focus Speed (0-7)', default: 3, min: 0, max: 7 },
+				{ id: 'speed', type: 'number', label: 'Focus Speed (0-7)', default: 3, min: 0, max: 7, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -60,10 +60,10 @@ export function createFocusActions(self: ModuleInstance): CompanionActionDefinit
 						cmd = '8101040803FF'
 						break
 					case 'far_variable':
-						cmd = `810104082${Number(speed)}FF`
+						cmd = `810104082${Math.round(Number(speed))}FF`
 						break
 					case 'near_variable':
-						cmd = `810104083${Number(speed)}FF`
+						cmd = `810104083${Math.round(Number(speed))}FF`
 						break
 					case 'stop':
 						cmd = '8101040800FF'
@@ -74,21 +74,23 @@ export function createFocusActions(self: ModuleInstance): CompanionActionDefinit
 		},
 		focus_direct: {
 			name: 'Focus: Direct Position',
-			options: [{ id: 'position', type: 'number', label: 'Focus Position (0-65535)', default: 0, min: 0, max: 65535 }],
+			options: [
+				{ id: 'position', type: 'number', label: 'Focus Position (0-65535)', default: 0, min: 0, max: 65535, step: 1 },
+			],
 			callback: async (event) => {
-				const pos = uint16ToViscaNibbles(Number(event.options.position ?? 0))
+				const pos = uint16ToViscaNibbles(Math.round(Number(event.options.position ?? 0)))
 				self.sendViscaCommand(`81010448${pos}FF`)
 			},
 		},
 		zoom_focus_direct: {
 			name: 'Focus: Zoom+Focus Direct',
 			options: [
-				{ id: 'zoom_pos', type: 'number', label: 'Zoom Position (0~16384)', default: 0, min: 0, max: 16384 },
-				{ id: 'focus_pos', type: 'number', label: 'Focus Position (0-65535)', default: 0, min: 0, max: 65535 },
+				{ id: 'zoom_pos', type: 'number', label: 'Zoom Position (0~16384)', default: 0, min: 0, max: 16384, step: 1 },
+				{ id: 'focus_pos', type: 'number', label: 'Focus Position (0-65535)', default: 0, min: 0, max: 65535, step: 1 },
 			],
 			callback: async (event) => {
-				const zoomPos = uint16ToViscaNibbles(Number(event.options.zoom_pos ?? 0))
-				const focusPos = uint16ToViscaNibbles(Number(event.options.focus_pos ?? 0))
+				const zoomPos = uint16ToViscaNibbles(Math.round(Number(event.options.zoom_pos ?? 0)))
+				const focusPos = uint16ToViscaNibbles(Math.round(Number(event.options.focus_pos ?? 0)))
 				self.sendViscaCommand(`81010447${zoomPos}${focusPos}FF`)
 			},
 		},

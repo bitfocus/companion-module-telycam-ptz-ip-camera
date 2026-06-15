@@ -20,7 +20,7 @@ export function createZoomActions(self: ModuleInstance): CompanionActionDefiniti
 					],
 					default: 'tele_variable',
 				},
-				{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7 },
+				{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7, step: 1 },
 			],
 			callback: async (event) => {
 				const action = event.options.action as string
@@ -34,10 +34,10 @@ export function createZoomActions(self: ModuleInstance): CompanionActionDefiniti
 						cmd = '8101040703FF'
 						break
 					case 'tele_variable':
-						cmd = `810104072${Number(speed)}FF`
+						cmd = `810104072${Math.round(Number(speed))}FF`
 						break
 					case 'wide_variable':
-						cmd = `810104073${Number(speed)}FF`
+						cmd = `810104073${Math.round(Number(speed))}FF`
 						break
 					case 'stop':
 						cmd = '8101040700FF'
@@ -56,17 +56,18 @@ export function createZoomActions(self: ModuleInstance): CompanionActionDefiniti
 					default: 0,
 					min: 0,
 					max: 16384,
+					step: 1,
 				},
 			],
 			callback: async (event) => {
-				const pos = uint16ToViscaNibbles(Number(event.options.position ?? 0))
+				const pos = uint16ToViscaNibbles(Math.round(Number(event.options.position ?? 0)))
 				self.sendViscaCommand(`81010447${pos}FF`)
 			},
 		},
 		zoom_direct_with_speed: {
 			name: 'Lens: Zoom Direct with Speed',
 			options: [
-				{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7 },
+				{ id: 'speed', type: 'number', label: 'Zoom Speed (0-7)', default: 5, min: 0, max: 7, step: 1 },
 				{
 					id: 'position',
 					type: 'number',
@@ -74,11 +75,12 @@ export function createZoomActions(self: ModuleInstance): CompanionActionDefiniti
 					default: 0,
 					min: 0,
 					max: 16384,
+					step: 1,
 				},
 			],
 			callback: async (event) => {
-				const speed = toHex(Number(event.options.speed ?? 5))
-				const pos = uint16ToViscaNibbles(Number(event.options.position ?? 0))
+				const speed = toHex(Math.round(Number(event.options.speed ?? 5)))
+				const pos = uint16ToViscaNibbles(Math.round(Number(event.options.position ?? 0)))
 				self.sendViscaCommand(`810A04470${speed}${pos}FF`)
 			},
 		},
@@ -119,9 +121,9 @@ export function createZoomActions(self: ModuleInstance): CompanionActionDefiniti
 		},
 		zoom_speed: {
 			name: 'Lens: Set Default Zoom Speed',
-			options: [{ id: 'speed', type: 'number', label: 'Zoom Speed (1-7)', default: 5, min: 1, max: 7 }],
+			options: [{ id: 'speed', type: 'number', label: 'Zoom Speed (1-7)', default: 5, min: 1, max: 7, step: 1 }],
 			callback: async (event) => {
-				const speed = toHex(Number(event.options.speed ?? 5))
+				const speed = toHex(Math.round(Number(event.options.speed ?? 5)))
 				self.sendViscaCommand(`810104D10000${speed}FF`)
 			},
 		},
