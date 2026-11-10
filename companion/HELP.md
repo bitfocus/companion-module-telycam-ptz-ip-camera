@@ -62,3 +62,11 @@ Control plugin for Telycam PTZ IP Cameras via VISCA over UDP and HTTP CGI API.
 - `wb_mode`: Current white balance mode
 - `exposure_mode`: Current exposure mode
 - `focus_mode`: Current focus mode
+- `brightness`: Current brightness value
+- `sharpness`: Current sharpness value
+- `contrast`: Current contrast value
+- `saturation`: Current saturation value
+- `gamma`: Current gamma value
+- `wdr_level`: Current WDR level
+- `color_temp`: Current color temperature
+- `auto_tracking`: Auto tracking state (`on` / `off`)

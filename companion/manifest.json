@@ -5,7 +5,7 @@
 	"name": "Telycam PTZ IP Camera",
 	"shortname": "Telycam PTZ",
 	"description": "Telycam PTZ IP Camera VISCA and HTTP control plugin",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"license": "MIT",
 	"manufacturer": "Telycam",
 	"products": ["Telycam PTZ IP Camera"],

@@ -81,6 +81,11 @@ export function createSystemActions(self: ModuleInstance): CompanionActionDefini
 			callback: async (event) => {
 				const action = event.options.action as string
 				self.sendViscaCommand(action === 'on' ? '810104C801FF' : '810104C800FF')
+				self.setVariableValues({ auto_tracking: action === 'on' ? 'on' : 'off' })
+				self.checkFeedbacks('auto_tracking_feedback')
+				setTimeout(() => {
+					self.queryAutoTrackingStatus()
+				}, 200)
 			},
 		},
 		tracking_tilt_lock: {

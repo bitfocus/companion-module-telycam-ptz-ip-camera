@@ -19,6 +19,12 @@ export type FeedbacksSchema = {
 			mode: string
 		}
 	}
+	auto_tracking_feedback: {
+		type: 'boolean'
+		options: {
+			state: string
+		}
+	}
 }
 
 export function UpdateFeedbacks(self: ModuleInstance): void {
@@ -103,6 +109,31 @@ export function UpdateFeedbacks(self: ModuleInstance): void {
 			callback: (feedback) => {
 				const currentMode = self.getVariableValue('focus_mode')
 				return currentMode === feedback.options.mode
+			},
+		},
+
+		auto_tracking_feedback: {
+			name: 'Auto Tracking State Indicator',
+			type: 'boolean',
+			defaultStyle: {
+				bgcolor: 0x006400,
+				color: 0xffffff,
+			},
+			options: [
+				{
+					id: 'state',
+					type: 'dropdown',
+					label: 'Auto Tracking State',
+					choices: [
+						{ id: 'on', label: 'ON' },
+						{ id: 'off', label: 'OFF' },
+					],
+					default: 'on',
+				},
+			],
+			callback: (feedback) => {
+				const currentState = self.getVariableValue('auto_tracking')
+				return currentState === feedback.options.state
 			},
 		},
 	})

@@ -77,6 +77,10 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 				this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
 			})
 
+			this.udpSocket.on('message', (msg) => {
+				this.handleViscaResponse(msg)
+			})
+
 			this.updateStatus(InstanceStatus.Ok)
 		} catch (e: any) {
 			this.log('error', `Could not create UDP Socket: ${e.message}`)
@@ -96,9 +100,43 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	}
 
 	/**
+	 * Parse VISCA inquiry responses (e.g. CAM_AT_OnOff_Inq: 8x 09 04 C8 FF -> y0 50 0p FF)
+	 */
+	private handleViscaResponse(msg: Buffer): void {
+		for (let i = 0; i <= msg.length - 4; i++) {
+			const b0 = msg[i]
+			const b1 = msg[i + 1]
+			const b2 = msg[i + 2]
+			const b3 = msg[i + 3]
+			const isFrameStart = i === 0 || i === 8 || msg[i - 1] === 0xff
+
+			if (
+				isFrameStart &&
+				(b0 & 0x8f) === 0x80 &&
+				b0 !== 0x80 &&
+				b1 === 0x50 &&
+				(b2 === 0x00 || b2 === 0x01) &&
+				b3 === 0xff
+			) {
+				const trackingState = b2 === 0x01 ? 'on' : 'off'
+				this.setVariableValues({ auto_tracking: trackingState })
+				this.checkFeedbacks('auto_tracking_feedback')
+				this.log('debug', `[VISCA] Auto-tracking inquiry reply: ${trackingState}`)
+			}
+		}
+	}
+
+	/**
+	 * Query Auto-Tracking On/Off state via VISCA (CAM_AT_OnOff_Inq: 81 09 04 C8 FF)
+	 */
+	public queryAutoTrackingStatus(): void {
+		this.sendViscaCommand('810904C8FF', false)
+	}
+
+	/**
 	 * Send VISCA hex commands
 	 */
-	public sendViscaCommand(hexString: string): void {
+	public sendViscaCommand(hexString: string, logInfo = true): void {
 		if (!this.udpSocket) {
 			this.log('warn', 'UDP socket not initialized')
 			return
@@ -123,8 +161,10 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		this.udpSocket.send(buffer, port, host, (err) => {
 			if (err) {
 				this.log('error', `Failed to send VISCA: ${err.message}`)
-			} else {
+			} else if (logInfo) {
 				this.log('info', `[VISCA] Sent: ${cleanHex} → ${host}:${port}`)
+			} else {
+				this.log('debug', `[VISCA] Sent inquiry: ${cleanHex} → ${host}:${port}`)
 			}
 		})
 	}
@@ -166,6 +206,9 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	private async pollCameraStatus(): Promise<void> {
 		if (!this.config.host) return
 
+		// Query Auto-Tracking state over VISCA UDP
+		this.queryAutoTrackingStatus()
+
 		const port = this.config.httpPort || '80'
 
 		const jsonPayload = JSON.stringify({
@@ -179,6 +222,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 				saturation: true,
 				gamma: true,
 				WDR_level: true,
+				color_temperature: true,
 			},
 		})
 		const url = `http://${this.config.host}:${port}/cgi-bin/web.fcgi?func=get${encodeURIComponent(jsonPayload)}`
@@ -217,6 +261,8 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 						if (typeof json.image.saturation === 'number') this.currentState.saturation = json.image.saturation
 						if (typeof json.image.gamma === 'number') this.currentState.gamma = json.image.gamma
 						if (typeof json.image.WDR_level === 'number') this.currentState.wdr_level = json.image.WDR_level
+						if (typeof json.image.color_temperature === 'number')
+							this.currentState.color_temp = json.image.color_temperature
 					}
 
 					this.setVariableValues({
@@ -229,7 +275,9 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 						saturation: json.image.saturation ?? undefined,
 						gamma: json.image.gamma ?? undefined,
 						wdr_level: json.image.WDR_level ?? undefined,
+						color_temp: json.image.color_temperature ?? undefined,
 					})
+					this.checkFeedbacks('wb_mode_feedback', 'exposure_mode_feedback', 'focus_mode_feedback')
 
 					if (!isStatusOk) {
 						this.log('debug', `HTTP polling data available, but status is false: ${JSON.stringify(json)}`)

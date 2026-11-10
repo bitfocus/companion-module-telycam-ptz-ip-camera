@@ -11,6 +11,7 @@ export type VariablesSchema = {
 	gamma: number | undefined
 	wdr_level: number | undefined
 	color_temp: number | undefined
+	auto_tracking: string | undefined
 }
 
 export function UpdateVariableDefinitions(self: ModuleInstance): void {
@@ -25,5 +26,6 @@ export function UpdateVariableDefinitions(self: ModuleInstance): void {
 		gamma: { name: 'Current Gamma Value' },
 		wdr_level: { name: 'Current WDR Level' },
 		color_temp: { name: 'Current Color Temperature' },
+		auto_tracking: { name: 'Auto Tracking State' },
 	})
 }

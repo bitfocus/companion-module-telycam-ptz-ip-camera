@@ -214,7 +214,7 @@ export function UpdatePresets(self: ModuleInstance): void {
 					id: 'tracking',
 					type: 'simple',
 					name: 'Tracking',
-					presets: ['tracking_on', 'tracking_off'],
+					presets: ['tracking_status', 'tracking_on', 'tracking_off'],
 				},
 				{
 					id: 'tracking_mode',
@@ -889,19 +889,43 @@ export function UpdatePresets(self: ModuleInstance): void {
 		},
 
 		// ── Auto Tracking ─────────────────────────────────────────
+		tracking_status: {
+			type: 'simple',
+			name: 'Auto Tracking Status',
+			style: {
+				text: 'Tracking\n$(telycam-ptz-ip-camera:auto_tracking)',
+				size: SZ,
+				color: CLR_WHITE,
+				bgcolor: BG_PURPLE,
+			},
+			steps: [],
+			feedbacks: [],
+		},
 		tracking_on: {
 			type: 'simple',
 			name: 'Tracking ON',
 			style: { text: 'Tracking ON', size: SZ, color: CLR_WHITE, bgcolor: BG_PURPLE },
 			steps: [{ down: [{ actionId: 'tracking_onoff', options: { action: 'on' } }], up: [] }],
-			feedbacks: [],
+			feedbacks: [
+				{
+					feedbackId: 'auto_tracking_feedback',
+					options: { state: 'on' },
+					style: { bgcolor: 0x006400, color: 0xffffff },
+				},
+			],
 		},
 		tracking_off: {
 			type: 'simple',
 			name: 'Tracking OFF',
 			style: { text: 'Tracking OFF', size: SZ, color: CLR_WHITE, bgcolor: BG_PURPLE },
 			steps: [{ down: [{ actionId: 'tracking_onoff', options: { action: 'off' } }], up: [] }],
-			feedbacks: [],
+			feedbacks: [
+				{
+					feedbackId: 'auto_tracking_feedback',
+					options: { state: 'off' },
+					style: { bgcolor: 0x006400, color: 0xffffff },
+				},
+			],
 		},
 
 		track_mode_only: makeTrackingModePreset('Tracking', '0'),
